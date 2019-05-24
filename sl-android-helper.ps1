@@ -260,7 +260,8 @@ function ShowApkSelectionList {
         $_array
     )
     
-    Write-Host "`nSelect target apk to install:`n"
+    Write-Host "`nSelect target apk to install:"
+    Write-Host "OR drag an apk into this window...`n" -ForegroundColor DarkGray
     # Write-Host $_array
     $count = 1
     foreach ($line in $_array) { 
