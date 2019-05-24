@@ -6,8 +6,6 @@ Set back when done testing:
 Set-ExecutionPolicy RemoteSigned
 #>
 
-$adbPath = ./adb/adb.exe
-
 #create array
 $apkArray = @()
 $deviceArray = @()
@@ -36,15 +34,39 @@ function Init {
         Init
     }
     
-
-    $_installToDeviceId = GetDeviceId $_selectedDeviceInfo
-    Write-Host "`nPreparing to install $_selectedApkName to $_installToDeviceId."
+    if ($_selectedDeviceInfo -eq "ALL")
+    {
+        Write-Host "`Ready to install $_selectedApkName to ALL available devices."
+        PressEnter
+        foreach ($_device in $deviceArray) {
+            $_installToDeviceId = GetDeviceId $_device
+            InstallApkToDevice $_selectedApkName $_installToDeviceId
+        }
+    }
+    else
+    {
+        $_installToDeviceId = GetDeviceId $_selectedDeviceInfo
+        Write-Host "`nReady to install $_selectedApkName to $_installToDeviceId."
+        PressEnter
+        InstallApkToDevice $_selectedApkName $_installToDeviceId
+    }
 
     PressEnter
-    Write-Host "Installing..."
+    
+}
 
-    # check if system adb exists
-    if (Get-Command adb -errorAction SilentlyContinue)
+function InstallApkToDevice {
+    param (
+        $_apkPath,
+        $_deviceId
+    )
+    
+    Write-Host "Installing $_apkPath to $_deviceId..."
+
+    .\adb\adb.exe -s "$_deviceId" install -r -t -d -g "$_apkPath"
+    
+    # TODO: use system ADB instead of local (if available)
+    <# if (Get-Command adb -errorAction SilentlyContinue)
     {
         # use System's adb
         $adbPath = adb
@@ -53,11 +75,9 @@ function Init {
     else{
         # use local adb
         .\adb\adb.exe -s $_installToDeviceId install -r -t -d -g .\$_selectedApkName
-    }
+    } #>
 
-    PressEnter
 }
-
 function PromptForDevice {
     param(
         $_deviceArray
@@ -95,8 +115,9 @@ function PromptForDevice {
             }
             elseif ($_deviceSelection -lt 0)
             {
-                Clear-Host
-                Write-Host "`nNot implemented in this tool yet... Sorry!`n" -ForegroundColor Yellow
+                $_deviceSelection = "ALL"
+                $_isValidChoice = 1
+                return $_deviceSelection
             }
             else
             {
@@ -130,10 +151,18 @@ function PromptForApk {
         $_apkSelection = 0
         $_isValidChoice = 0
         while (!$_isValidChoice) {
+            
+
+
             $_apkSelection = ShowApkSelectionList $_apkArray
             $_selectedApkName = $_apkArray[$_apkSelection]
-            
-            if ($_apkSelection -ge $deviceArray.count)
+            # check for drag and dropped file
+            if([System.IO.File]::Exists($_apkSelection)){
+                # file exists!
+                return $_apkSelection
+                $_isValidChoice = 1
+            }
+            elseif ($_apkSelection -ge $_apkArray.count)
             {
                 Clear-Host
                 Write-Host "`nAPK not found...`n" -ForegroundColor Red
@@ -240,7 +269,11 @@ function ShowApkSelectionList {
     }
 
     $_selection = Read-Host -Prompt "`n`n"
-    $_selection -= 1;
+
+    # TODO: clean this up... hacky check for number entry... (to allow path to apk)
+    if ($_selection.length -lt 4){
+        $_selection -= 1;
+    }
     return $_selection
 }
 
