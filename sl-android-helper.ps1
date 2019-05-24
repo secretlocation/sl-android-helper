@@ -62,20 +62,15 @@ function InstallApkToDevice {
     )
     
     Write-Host "Installing $_apkPath to $_deviceId..."
-
-    .\adb\adb.exe -s "$_deviceId" install -r -t -d -g "$_apkPath"
     
-    # TODO: use system ADB instead of local (if available)
-    <# if (Get-Command adb -errorAction SilentlyContinue)
-    {
-        # use System's adb
-        $adbPath = adb
-        .\adb\adb.exe -s $_installToDeviceId install -r -t -d -g .\$_selectedApkName
+    # check if local adb is present, if not use system's adb
+    if (Test-Path ".\adb\adb.exe" -PathType Leaf){
+        .\adb\adb.exe -s "$_deviceId" install -r -t -d -g "$_apkPath"
     }
-    else{
-        # use local adb
-        .\adb\adb.exe -s $_installToDeviceId install -r -t -d -g .\$_selectedApkName
-    } #>
+    else
+    {
+        adb -s "$_deviceId" install -r -t -d -g "$_apkPath"
+    }
 
 }
 function PromptForDevice {
@@ -193,7 +188,16 @@ function GetApkList {
 }
 
 function GetDeviceList {
-    $_deviceList = .\adb\adb.exe devices -l
+    $_deviceList
+
+    # check if local adb is present, if not use system's adb
+    if (Test-Path ".\adb\adb.exe" -PathType Leaf){
+        $_deviceList = .\adb\adb.exe devices -l
+    }
+    else
+    {
+        $_deviceList = adb devices -l
+    }
     
     $_deviceArray = @()
 
