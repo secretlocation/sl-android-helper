@@ -45,7 +45,7 @@ It is compiled to EXE using [PS2EXE-GUI](https://gallery.technet.microsoft.com/s
 
 ## MIT License
 
-Copyright (c) 2019 Secret Location https://secretlocation.com
+Copyright (c) 2019 Secret Location Inc. https://secretlocation.com
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
