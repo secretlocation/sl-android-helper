@@ -1,4 +1,4 @@
-This utility to make APK management on android devices easier.
+This utility's goal is to make APK management across mulitple android devices easier.
 
 ## Instructions
 
