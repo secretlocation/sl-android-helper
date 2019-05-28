@@ -1,6 +1,5 @@
 sl-android-helper was created to simplify APK management on android devices.
 
-
 ## Instructions
 
 1. Download the [latest release](https://github.com/secretlocation/sl-android-helper/releases) 
