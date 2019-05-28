@@ -36,7 +36,11 @@ function Init {
     
     if ($_selectedDeviceInfo -eq "ALL")
     {
-        Write-Host "`Ready to install $_selectedApkName to ALL available devices."
+        Write-Host "`nReady to install " -NoNewLine
+        Write-Host $_selectedApkName -ForegroundColor Green -NoNewLine
+        Write-Host " to "  -NoNewLine
+        Write-Host "ALL available devices." -ForegroundColor Green
+
         PressEnter
         foreach ($_device in $deviceArray) {
             $_installToDeviceId = GetDeviceId $_device
@@ -46,9 +50,14 @@ function Init {
     else
     {
         $_installToDeviceId = GetDeviceId $_selectedDeviceInfo
-        Write-Host "`nReady to install $_selectedApkName to $_installToDeviceId."
+        Write-Host "`nReady to install " -NoNewLine
+        Write-Host $_selectedApkName -ForegroundColor Green -NoNewLine
+        Write-Host " to "  -NoNewLine
+        Write-Host $_installToDeviceId -ForegroundColor Green -NoNewLine
+        Write-Host "."
         PressEnter
-        InstallApkToDevice $_selectedApkName $_installToDeviceId
+        $_trimmedApk = $_selectedApkName.Trim();
+        InstallApkToDevice $_trimmedApk $_installToDeviceId
     }
 
     PressEnter
@@ -132,12 +141,13 @@ function PromptForApk {
     )
     # APK Selection
     if ($_apkArray.count -eq 0){
-        PressEnter "`nNo APKs - Please make sure it's in this directory..." -ForegroundColor Yellow
-        Init
+        Write-Host "`nNo APKs found in local directory." -ForegroundColor Yellow
+        # Write-Host "OR drag an apk into this window...`n" -ForegroundColor DarkGray
+        ShowApkSelectionList $_apkArray
     }
     elseif($_apkArray.count -eq 1){
         $_selectedApkName = $_apkArray
-        Write-Host "`nOnly found one APK to use:" -ForegroundColor Green
+        Write-Host "`nFound one APK in local directory:" -ForegroundColor Green
         Write-Host "Using " -ForegroundColor Gray -NoNewLine
         Write-Host $_selectedApkName -ForegroundColor Green
     }
@@ -188,8 +198,6 @@ function GetApkList {
 }
 
 function GetDeviceList {
-    $_deviceList
-
     # check if local adb is present, if not use system's adb
     if (Test-Path ".\adb\adb.exe" -PathType Leaf){
         $_deviceList = .\adb\adb.exe devices -l
@@ -264,8 +272,13 @@ function ShowApkSelectionList {
         $_array
     )
     
-    Write-Host "`nSelect target apk to install:"
-    Write-Host "OR drag an apk into this window...`n" -ForegroundColor DarkGray
+    if ($_array.count -gt 0)
+    {
+        Write-Host "`nSelect target apk to install:"
+        Write-Host "OR drag an apk into this window...`n" -ForegroundColor DarkGray -NoNewLine
+    }
+
+    Write-Host "Drag an apk into this window and hit ENTER...`n" -ForegroundColor DarkGray
     # Write-Host $_array
     $count = 1
     foreach ($line in $_array) { 
