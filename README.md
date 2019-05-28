@@ -1,5 +1,10 @@
 sl-android-helper was created to simplify APK management on android devices.
 
+## Features
+* Detect connected android devices whether authorized or unauthorized
+* Install APK on specific _or_ ALL authorized android devices
+* Includes [Minimal ADB](https://forum.xda-developers.com/showthread.php?t=2317790) for convenience
+
 ## Instructions
 
 1. Download the [latest release](https://github.com/secretlocation/sl-android-helper/releases) 
@@ -8,12 +13,6 @@ sl-android-helper was created to simplify APK management on android devices.
 1. Run **sl-android-helper.exe** and follow the prompts
 
 ![Screenshot](/images/screenshot.png)
-
-
-## Features
-* Detect connected android devices whether authorized or unauthorized
-* Install APK on specific _or_ ALL authorized android devices
-* Includes [Minimal ADB](https://forum.xda-developers.com/showthread.php?t=2317790) for convenience
 
 
 ## Developers
