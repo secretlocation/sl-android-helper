@@ -40,6 +40,7 @@ It is compiled to EXE using [PS2EXE-GUI](https://gallery.technet.microsoft.com/s
 
 ## External Resources
 [Minimal ADB](https://forum.xda-developers.com/showthread.php?t=2317790)
+
 [PS2EXE-GUI](https://gallery.technet.microsoft.com/scriptcenter/PS2EXE-GUI-Convert-e7cb69d5)
 
 
